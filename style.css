@@ -1,0 +1,46 @@
+
+.form-container {
+	width: 225px;
+	margin: auto;
+}
+
+.formitem-container {
+	display: flex;
+	justify-content: space-between;
+}
+
+.label-container {
+	display: inline-block;
+	width: 81px;
+}
+
+.input-container {
+	display: inline-block;
+	float: right;	
+}
+
+.validation-container  {
+	display: block;
+	font-size: 12px;
+	font-style: italic;
+	text-align: right;
+	margin: 3px 0 5px;
+	font-family: Amethesta, "sans-serif";
+}
+
+.invalid {
+	color: red;
+}
+
+.validated {
+	color: green;
+}
+.validated:after {
+	position: relative;
+	content: ' this';
+	width: 16px;
+	height: 16px;
+	top: 0px;
+	right: 0px;
+	background-color: green;
+}
