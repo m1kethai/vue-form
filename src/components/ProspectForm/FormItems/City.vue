@@ -6,61 +6,106 @@
 			</div>
 
 			<div class="input-container">
-				<input 
-					type="text" 
+				<input
+					type="text"
 					id="city"
-					name="city" 
-					v-model="city" 
+					:class="validationInputClass"
+					v-model="newCity"
 					@input="updateModel"
 				>
+				<div
+					:class="validationIconClass">
+				</div>
 			</div>
 
 		</div>
-		<div :class="validationClass">
-			<div 	
+		<div :class="validationMsgClass">
+			<div
 				v-for="error in errors"
 				>
 				{{ error }}
 			</div>
 		</div>
-	</div>		
+	</div>
 </template>
 
 <script>
 /* eslint-disable */
 
 export default {
+	props: ['city'],
 	data () {
 		return {
-			city: null,
+			newCity: this.city,
 			errors: null
 		}
 	},
 	computed: {
-		validationClass() {
+		validationInputClass() {
 			if(this.errors == null) {
-				return 'validation-container blank'
+				return 'unvalidatedInput'
 			}
 			else if(this.errors){
 				if(this.errors.length > 0) {
-					return 'validation invalid';
-				}	
-				else {
-					return 'validation validated';
+					return 'validatedInput invalid';
 				}
-			} 	
-		}
+				else {
+					return 'validatedInput valid';
+				}
+			}
+		},
+		validationMsgClass() {
+			if(this.errors == null) {
+				return 'unvalidatedMsgContainer'
+			}
+			else if(this.errors){
+				if(this.errors.length > 0) {
+					return 'validatedMsgContainer invalid';
+				}
+				else {
+					return 'unvalidatedMsgContainer valid';
+				}
+			}
+		},
+		validationIconClass() {
+			if(this.errors == null) {
+				return 'validationIcon unvalidated'
+			}
+			else if(this.errors){
+				if(this.errors.length > 0) {
+					return 'validationIcon invalid';
+				}
+				else {
+					return 'validationIcon valid';
+				}
+			}
+		},
 	},
 	methods: {
 		updateModel() {
 			this.errors = [];
-			if (this.city === 'badinput') {
-				this.errors.push('The input is bad');
-			}
-			if(this.city == '') {
+
+			if(this.newCity == '') {
 				this.errors.push('This field is required');
 			}
-			this.$emit('input', this.city);
+			if (this.invalidCharValidation() === true) {
+				this.errors.push('Numbers and special characters not allowed')
+			}
+			this.$emit('update', 'city', this.newCity);
+		},
+		invalidCharValidation() {
+			var invalidChars = "01234567389<>@!#$%^&*()_+[]{}?:;|'\"\\,./~`-=";
+			var i;
+			for (i=0; i < invalidChars.length ; i++) {
+				if (this.newCity.includes(invalidChars[i])) {
+					return true;
+				}
+			}
+		}
+	},
+	watch: {
+		city(value) {
+			this.newCity = value;
 		}
 	}
 }

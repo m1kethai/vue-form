@@ -6,24 +6,27 @@
 			</div>
 
 			<div class="input-container">
-				<input 
-					type="text" 
+				<input
+					type="text"
 					id="address"
-					name="address" 
-					v-model="address" 
+					:class="validationInputClass"
+					v-model="address"
 					@input="updateModel"
 				>
+				<div
+					:class="validationIconClass">
+				</div>
 			</div>
 
 		</div>
-		<div :class="validationClass">
-			<div 	
+		<div :class="validationMsgClass">
+			<div
 				v-for="error in errors"
 				>
 				{{ error }}
 			</div>
 		</div>
-	</div>		
+	</div>
 </template>
 
 <script>
@@ -37,30 +40,66 @@ export default {
 		}
 	},
 	computed: {
-		validationClass() {
+		validationInputClass() {
 			if(this.errors == null) {
-				return 'validation-container blank'
+				return 'unvalidatedInput'
 			}
 			else if(this.errors){
 				if(this.errors.length > 0) {
-					return 'validation invalid';
-				}	
-				else {
-					return 'validation validated';
+					return 'validatedInput invalid';
 				}
-			} 	
-		}
+				else {
+					return 'validatedInput valid';
+				}
+			}
+		},
+		validationMsgClass() {
+			if(this.errors == null) {
+				return 'unvalidatedMsgContainer'
+			}
+			else if(this.errors){
+				if(this.errors.length > 0) {
+					return 'validatedMsgContainer invalid';
+				}
+				else {
+					return 'unvalidatedMsgContainer valid';
+				}
+			}
+		},
+		validationIconClass() {
+			if(this.errors == null) {
+				return 'validationIcon unvalidated'
+			}
+			else if(this.errors){
+				if(this.errors.length > 0) {
+					return 'validationIcon invalid';
+				}
+				else {
+					return 'validationIcon valid';
+				}
+			}
+		},
 	},
 	methods: {
 		updateModel() {
 			this.errors = [];
-			if (this.address === 'badinput') {
-				this.errors.push('The input is bad');
-			}
+
 			if(this.address == '') {
 				this.errors.push('This field is required');
 			}
+			if (this.invalidCharValidation() === true) {
+				this.errors.push('Special characters not allowed')
+			}
 			this.$emit('input', this.address);
+		},
+		invalidCharValidation() {
+			var invalidChars = "<>@!#$%^&*()_+[]{}?:;|'\"\\,./~`-=";
+			var i;
+			for (i=0; i < invalidChars.length ; i++) {
+				if (this.address.includes(invalidChars[i])) {
+					return true;
+				}
+			}
 		}
 	}
 }

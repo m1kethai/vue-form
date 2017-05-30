@@ -6,25 +6,27 @@
 			</div>
 
 			<div class="input-container">
-				<input 
-					type="text" 
+				<input
+					type="text"
 					id="last_name"
-					name="last_name" 
-					v-model="last_name" 
+					:class="validationInputClass"
+					v-model="last_name"
 					@input="updateModel"
 				>
+				<div
+					:class="validationIconClass">
+				</div>
 			</div>
 
 		</div>
-		<div :class="validationClass">
-			<div 
+		<div :class="validationMsgClass">
+			<div
 				v-for="error in errors"
 				>
 				{{ error }}
 			</div>
 		</div>
 	</div>
-		
 </template>
 
 <script>
@@ -38,18 +40,57 @@ export default {
 		}
 	},
 	computed: {
-		validationClass() {
+		validationInputClass() {
 			if(this.errors == null) {
-				return 'validation-container blank'
+				return 'unvalidatedInput'
 			}
 			else if(this.errors){
 				if(this.errors.length > 0) {
-					return 'validation invalid';
-				}	
-				else {
-					return 'validation validated';
+					return 'validatedInput invalid';
 				}
-			} 	
+				else {
+					return 'validatedInput valid';
+				}
+			}
+		},
+		validationInputClass() {
+			if(this.errors == null) {
+				return 'unvalidatedInput'
+			}
+			else if(this.errors){
+				if(this.errors.length > 0) {
+					return 'validatedInput invalid';
+				}
+				else {
+					return 'validatedInput valid';
+				}
+			}
+		},
+		validationMsgClass() {
+			if(this.errors == null) {
+				return 'unvalidatedMsgContainer'
+			}
+			else if(this.errors){
+				if(this.errors.length > 0) {
+					return 'validatedMsgContainer invalid';
+				}
+				else {
+					return 'unvalidatedMsgContainer valid';
+				}
+			}
+		},
+		validationIconClass() {
+			if(this.errors == null) {
+				return 'validationIcon unvalidated'
+			}
+			else if(this.errors){
+				if(this.errors.length > 0) {
+					return 'validationIcon invalid';
+				}
+				else {
+					return 'validationIcon valid';
+				}
+			}
 		}
 	},
 	methods: {
@@ -61,17 +102,17 @@ export default {
 			if(this.last_name == '') {
 				this.errors.push('This field is required');
 			}
-			if (this.specialCharValidation() === true) {
-				this.errors.push('Special characters and spaces not allowed')
-			} 
+			if (this.invalidCharValidation() === true) {
+				this.errors.push('Numbers, special characters and spaces not allowed')
+			}
 
 			this.$emit('input', this.last_name);
 		},
-		specialCharValidation() {
-			var specialChars = " <>@!#$%^&*()_+[]{}?:;|'\"\\,./~`-=";
+		invalidCharValidation() {
+			var invalidChars = "0123456789<>@!#$%^&*()_+[]{}?:;|'\"\\,./~`-=";
 			var i;
-			for (i=0; i < specialChars.length ; i++) {
-				if (this.last_name.includes(specialChars[i])) {
+			for (i=0; i < invalidChars.length ; i++) {
+				if (this.last_name.includes(invalidChars[i])) {
 					return true;
 				}
 			}

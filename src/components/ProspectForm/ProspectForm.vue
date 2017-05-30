@@ -1,43 +1,42 @@
 <template>
 	<div class="form-container">
-		<first-name 
-			v-model="first_name" 
+		<first-name
+			v-model="first_name"
 			:first-name="first_name"
 		>
 		</first-name>
 
-		<last-name 
-			v-model="last_name" 
+		<last-name
+			v-model="last_name"
 			:last-name="last_name"
 		>
 		</last-name>
 		<zipcode
-			v-model="address.zipcode" 
-			:zipcode="address.zipcode"
+			@update="updateAddress"
 		>
 		</zipcode>
-		<city
-			v-model="address.city" 
-			:city="address.city"
-		>
-		</city>
 		<street-address
-			v-model="address.street_address" 
+			v-model="address.street_address"
 			:address="address.street_address"
 		>
 		</street-address>
+		<city
+			:city="address.city"
+			@update="updateAddress"
+		>
+		</city>
 		<state
-			v-model="address.state" 
-			:address="address.state"
+			:state="address.state"
+			@update="updateAddress"
 		>
 		</state>
 		<phone-number
-			v-model="phone_number" 
+			v-model="phone_number"
 			:phoneNumber="phone_number"
 		>
 		</phone-number>
 		<email-address
-			v-model="email_address" 
+			v-model="email_address"
 			:emailAddress="email_address"
 		>
 		</email-address>
@@ -81,11 +80,8 @@ export default {
 		EmailAddress
 	},
 	methods: {
-		updateModel() {
-			console.log('updating model');
-		},
-		checkSpecialChars() {
-			console.log('');
+		updateAddress(key, value) {
+			this.address[key] = value;
 		}
 	}
 }
@@ -93,18 +89,19 @@ export default {
 <style type="text/css">
 
 body {
-	font-family: Khula, "sans-serif";	
+	font-family: Khula, "sans-serif";
 }
 
+/*Forms*/
 .form-container {
 	width: 350px;
 	margin: 20vh auto;
 }
 
 .formitem-container {
-	display: flex;
+	/*display: flex;*/
+	/*justify-content: space-between;*/
 	margin: 10px 0 0;
-	justify-content: space-between;
 }
 
 .label-container {
@@ -113,36 +110,84 @@ body {
 }
 
 .input-container {
-	display: inline-block;
-	float: right;	
+	display: inline;
+	/*float: right;*/
 }
 
+/*turn off spinners on number inputs - only works on chrome*/
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/*Validation*/
 .validation  {
 	display: block;
 	font-size: 12px;
 	font-style: italic;
 	text-align: right;
-	/*margin: 5px 0;*/
 }
 
-.invalid {
+.validatedInput,
+.unvalidatedInput {
+	width: 150px;
+	border-radius: 2px;
+	transition: 0.3s border;
+}
+.validatedInput:focus {
+	outline: none;
+}
+.validatedInput.valid {
+	border: 2px solid green;
+}
+.validatedInput.valid::before {
+	content: 'sdjhfkf';
+  position: absolute;
+  background: url(http://wiki.pandorafms.com/images/d/d6/Yes_tick.png) no-repeat;
+  width: 20px;
+  height: 20px;
+}
+.validatedInput.invalid {
+	border: 2px solid red;
+}
+
+.validatedMsgContainer, .unvalidatedMsgContainer {
+	font-size: 12px;
+	margin: 7px 0 15px;
+}
+
+.validatedMsgContainer.invalid {
 	color: red;
 }
 
-.validated {
-	color: green;
+.validationIcon.unvalidated {
+	display: none;
+  margin: 1px 0 0 10px;
+  width: 24px;
+  height: 24px;
 }
-.validated:after {
-	content: 'valid';
-	/*background: url('/images/ic_check_18px.png');*/
-	height: 25px;
-	width: 25px;
-	position: relative;
 
-/*	top: -34px;
-	right: -23px;
-	content: '' ;
-	padding: 0 9px;
-	background-color: teal;*/
+.validationIcon.valid {
+	display: inline;
+  position: absolute;
+  background: url(ic_check_24px.svg) no-repeat;
+  margin: 1px 0 0 10px;
+  width: 24px;
+  height: 24px;
 }
+
+.validationIcon.invalid {
+	display: inline;
+  position: absolute;
+  background: url(ic_close_black_24px.svg) no-repeat;
+  margin: 1px 0 0 10px;
+  width: 24px;
+  height: 24px;
+}
+
+/*.validationIcon {
+}*/
+
+
 </style>
